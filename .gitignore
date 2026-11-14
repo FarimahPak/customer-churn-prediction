@@ -30,3 +30,7 @@ reports/figures/*
 # OS
 .DS_Store
 Thumbs.db
+
+!reports/figures/shap_feature_importance.png
+!reports/figures/shap_summary_plot.png
+!reports/figures/confusion_matrix.png
