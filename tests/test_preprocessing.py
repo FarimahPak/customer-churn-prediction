@@ -1,11 +1,27 @@
 
 import pandas as pd
 
-from src.churn_prediction.data import load_data, split_features_target
 from src.churn_prediction.preprocessing import (
+    NUMERICAL_FEATURES,
+    CATEGORICAL_FEATURES,
     clean_features,
     build_preprocessor,
 )
+
+
+def make_customer_data():
+    """Create synthetic customer data with all expected features."""
+
+    data = {
+        "tenure": [12, 24, 36],
+        "MonthlyCharges": [50.0, 80.0, 100.0],
+        "TotalCharges": [600.0, 1920.0, 3600.0],
+    }
+
+    for feature in CATEGORICAL_FEATURES:
+        data[feature] = ["Category_A", "Category_B", "Category_A"]
+
+    return pd.DataFrame(data)
 
 
 def test_clean_features_removes_customer_id():
@@ -52,27 +68,23 @@ def test_clean_features_does_not_modify_original_data():
 
 
 def test_preprocessor_output_shape():
-    """Test the transformed feature shape on the full dataset."""
+    """Test the transformed feature shape using synthetic data."""
 
-    df = load_data()
-    X, _ = split_features_target(df)
-    X = clean_features(X)
+    X = make_customer_data()
 
     preprocessor = build_preprocessor()
     X_transformed = preprocessor.fit_transform(X)
 
-    assert X_transformed.shape == (7043, 46)
+    expected_features = len(NUMERICAL_FEATURES) + 2 * len(CATEGORICAL_FEATURES)
+
+    assert X_transformed.shape == (3, expected_features)
 
 
 def test_preprocessor_handles_unknown_categories():
     """Test that unseen categorical values do not cause errors."""
 
-    df = load_data()
-    X, _ = split_features_target(df)
-    X = clean_features(X)
-
-    X_train = X.iloc[:100].copy()
-    X_new = X.iloc[[100]].copy()
+    X_train = make_customer_data()
+    X_new = X_train.iloc[[0]].copy()
 
     X_new.loc[:, "gender"] = "UnseenCategory"
 
@@ -82,4 +94,6 @@ def test_preprocessor_handles_unknown_categories():
     transformed = preprocessor.transform(X_new)
 
     assert transformed.shape[0] == 1
-    assert transformed.shape[1] == 46
+    assert transformed.shape[1] == (
+        len(NUMERICAL_FEATURES) + 2 * len(CATEGORICAL_FEATURES)
+    )

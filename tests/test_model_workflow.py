@@ -11,17 +11,54 @@ from src.churn_prediction.train import (
 )
 from src.churn_prediction.evaluate import evaluate_model
 
+@pytest.fixture
+def synthetic_data_splits():
+    """Prepare synthetic data splits for independent unit tests."""
+
+    import pandas as pd
+
+    X = pd.DataFrame({
+        "feature": range(100)
+    })
+
+    y = pd.Series([0, 1] * 50)
+
+    return split_data(X, y)
+
+@pytest.fixture
+def synthetic_data_splits():
+    """Prepare synthetic data splits for independent unit tests."""
+
+    import pandas as pd
+
+    from src.churn_prediction.preprocessing import (
+        NUMERICAL_FEATURES,
+        CATEGORICAL_FEATURES,
+    )
+
+    data = {
+        "tenure": range(1, 101),
+        "MonthlyCharges": [50.0 + i for i in range(100)],
+        "TotalCharges": [100.0 + i * 50 for i in range(100)],
+    }
+
+    for feature in CATEGORICAL_FEATURES:
+        data[feature] = ["Category_A", "Category_B"] * 50
+
+    X = pd.DataFrame(data)
+    y = pd.Series([0, 1] * 50)
+
+    return split_data(X, y)
 
 @pytest.fixture(scope="module")
 def data_splits():
-    """Prepare the same data splits used in model development."""
+    """Prepare the original data splits used in model development."""
 
     df = load_data()
     X, y = split_features_target(df)
     X = clean_features(X)
 
     return split_data(X, y)
-
 
 @pytest.fixture(scope="module")
 def trained_model(data_splits):
@@ -32,23 +69,24 @@ def trained_model(data_splits):
     return train_model(X_fit, y_fit)
 
 
-def test_split_data_sizes(data_splits):
-    """Test the expected sizes of all data splits."""
+def test_split_data_sizes(synthetic_data_splits):
+    """Test the expected sizes of synthetic data splits."""
 
-    X_fit, X_val, X_test, y_fit, y_val, y_test = data_splits
+    X_fit, X_val, X_test, y_fit, y_val, y_test = synthetic_data_splits
 
-    assert len(X_fit) == 4507
-    assert len(X_val) == 1127
-    assert len(X_test) == 1409
+    assert len(X_fit) == 64
+    assert len(X_val) == 16
+    assert len(X_test) == 20
 
 
-def test_data_splits_have_no_overlap(data_splits):
+def test_data_splits_have_no_overlap(synthetic_data_splits):
     """Test that training, validation, and test indexes are disjoint."""
 
-    X_fit, X_val, X_test, _, _, _ = data_splits
+    X_fit, X_val, X_test, _, _, _ = synthetic_data_splits
 
     assert set(X_fit.index).isdisjoint(X_val.index)
     assert set(X_fit.index).isdisjoint(X_test.index)
+    assert set(X_val.index).isdisjoint(X_test.index)
     assert set(X_val.index).isdisjoint(X_test.index)
 
 
@@ -70,18 +108,20 @@ def test_build_model_configuration():
     assert classifier.random_state == 42
 
 
-def test_model_training_and_predictions(data_splits, trained_model):
-    """Test that the model trains and produces valid probabilities."""
+def test_model_training_and_predictions(synthetic_data_splits):
+    """Test model training and predictions using synthetic data."""
 
-    X_fit, X_val, X_test, y_fit, y_val, y_test = data_splits
+    X_fit, X_val, _, y_fit, y_val, _ = synthetic_data_splits
 
-    probabilities = trained_model.predict_proba(X_val)
+    model = train_model(X_fit, y_fit)
 
-    assert probabilities.shape == (1127, 2)
+    probabilities = model.predict_proba(X_val)
+
+    assert probabilities.shape == (len(X_val), 2)
     assert np.isfinite(probabilities).all()
     assert np.all((probabilities >= 0) & (probabilities <= 1))
 
-
+@pytest.mark.integration
 def test_model_evaluation_matches_previous_results(
     data_splits,
     trained_model,

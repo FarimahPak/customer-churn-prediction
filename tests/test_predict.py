@@ -4,7 +4,6 @@ import pandas as pd
 import pytest
 
 from src.churn_prediction import predict as predict_module
-from src.churn_prediction.data import load_data
 
 
 class DummyModel:
@@ -19,7 +18,37 @@ class DummyModel:
         return np.array([
             [0.30, 0.70],
             [0.75, 0.25],
-    ])
+        ])
+
+
+def make_customer_data():
+    """Create synthetic customer data for prediction tests."""
+
+    return pd.DataFrame({
+        "customerID": ["C001", "C002"],
+        "tenure": [12, 24],
+        "MonthlyCharges": [50.0, 80.0],
+        "TotalCharges": ["600.0", " "],
+        "gender": ["Female", "Male"],
+        "SeniorCitizen": [0, 1],
+        "Partner": ["Yes", "No"],
+        "Dependents": ["No", "Yes"],
+        "PhoneService": ["Yes", "Yes"],
+        "MultipleLines": ["No", "Yes"],
+        "InternetService": ["DSL", "Fiber optic"],
+        "OnlineSecurity": ["Yes", "No"],
+        "OnlineBackup": ["No", "Yes"],
+        "DeviceProtection": ["Yes", "No"],
+        "TechSupport": ["No", "Yes"],
+        "StreamingTV": ["Yes", "No"],
+        "StreamingMovies": ["No", "Yes"],
+        "Contract": ["Month-to-month", "One year"],
+        "PaperlessBilling": ["Yes", "No"],
+        "PaymentMethod": [
+            "Electronic check",
+            "Mailed check",
+        ],
+    })
 
 
 def test_predict_churn_returns_expected_results(monkeypatch):
@@ -33,7 +62,7 @@ def test_predict_churn_returns_expected_results(monkeypatch):
         lambda: model,
     )
 
-    customers = load_data().drop(columns=["Churn"]).iloc[:2].copy()
+    customers = make_customer_data()
 
     results = predict_module.predict_churn(customers)
 
@@ -58,7 +87,7 @@ def test_predict_churn_cleans_input_data(monkeypatch):
         lambda: model,
     )
 
-    customers = load_data().drop(columns=["Churn"]).iloc[:2].copy()
+    customers = make_customer_data()
 
     predict_module.predict_churn(customers)
 
@@ -67,6 +96,7 @@ def test_predict_churn_cleans_input_data(monkeypatch):
         model.received_data["TotalCharges"]
     )
     assert model.received_data["TotalCharges"].isna().sum() == 0
+    assert model.received_data["TotalCharges"].tolist() == [600.0, 0.0]
 
 
 def test_load_model_file_not_found(monkeypatch, tmp_path):
