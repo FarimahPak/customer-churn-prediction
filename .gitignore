@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 
+# Testing and coverage
+.coverage
+.coverage.*
+.pytest_cache/
+htmlcov/
+
 # Virtual environments
 .venv/
 venv/

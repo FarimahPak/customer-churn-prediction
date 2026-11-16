@@ -755,3 +755,79 @@ The SHAP analysis highlighted the following findings:
 - The TreeExplainer output represents the model's raw output scale in this analysis, not directly calibrated churn probabilities.
 
 Overall, SHAP provided additional insight into the behavior of the final Gradient Boosting model and complemented the previous feature-importance and error-analysis methods.
+
+
+## 14. Final Gradient Boosting Test Evaluation
+
+### 14.1 Evaluation Setup
+
+The selected Gradient Boosting model was evaluated on the test split using the previously selected decision threshold.
+
+| Setting | Value |
+|---|---|
+| Model | Gradient Boosting Classifier |
+| Training samples | 4,507 |
+| Validation samples | 1,127 |
+| Test samples | 1,409 |
+| Decision threshold | 0.4 |
+| Number of estimators | 200 |
+| Learning rate | 0.05 |
+| Maximum depth | 2 |
+| Random state | 42 |
+
+The model was loaded from the saved model artifact and was not retrained during final evaluation.
+
+The same deterministic data split was recreated using the existing splitting procedure.
+
+### 14.2 Test Evaluation Results
+
+| Metric | Validation | Test |
+|---|---:|---:|
+| Accuracy | 0.8101 | 0.7857 |
+| Precision | 0.6367 | 0.5870 |
+| Recall | 0.6622 | 0.6497 |
+| F1-score | 0.6492 | 0.6168 |
+| ROC-AUC | 0.8510 | 0.8438 |
+| PR-AUC | 0.6707 | 0.6623 |
+| Brier Score | 0.1328 | 0.1361 |
+
+### 14.3 Test Confusion Matrix
+
+| | Predicted No Churn | Predicted Churn |
+|---|---:|---:|
+| Actual No Churn | 864 | 171 |
+| Actual Churn | 131 | 243 |
+
+The model correctly identified 243 churn customers and missed 131 actual churn cases.
+
+It also generated 171 false positive predictions.
+
+### 14.4 Observations
+
+- Test ROC-AUC (0.8438) remained close to validation ROC-AUC (0.8510).
+- Recall decreased slightly from 0.6622 to 0.6497.
+- Precision decreased from 0.6367 to 0.5870.
+- F1-score decreased from 0.6492 to 0.6168.
+- The Brier Score increased slightly from 0.1328 to 0.1361.
+
+Overall, the model demonstrated reasonably consistent ranking performance between validation and test data, although classification performance was lower on the test split.
+
+### 14.5 Evaluation Limitations
+
+The test split was used in earlier exploratory model comparisons and experiments documented in this report.
+
+Therefore, this evaluation should not be interpreted as a completely untouched, independent estimate of generalization performance.
+
+The reported results describe the performance of the selected Gradient Boosting model on the existing test split. Further evaluation on a new external dataset would provide stronger evidence of generalization.
+
+The decision threshold of 0.4 was selected using validation data and was not adjusted based on the latest test results.
+
+### 14.6 Final Conclusion
+
+The initial Gradient Boosting model was retained because it achieved the highest validation F1-score among the compared candidates.
+
+At the selected threshold of 0.4, the model achieved a test F1-score of 0.6168 and a ROC-AUC of 0.8438.
+
+The results indicate that the model can identify a meaningful proportion of churn customers, but false positive and false negative predictions remain important limitations.
+
+Future improvements could focus on reducing missed churn cases, investigating segment-level performance, and evaluating the model on an independent external dataset.

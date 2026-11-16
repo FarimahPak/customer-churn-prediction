@@ -2,7 +2,7 @@
 
 A machine learning project to predict customer churn using the IBM Telco Customer Churn dataset.
 
-The project covers the end-to-end machine learning workflow, including data exploration, preprocessing, model training, evaluation, hyperparameter tuning, error analysis, probability calibration, and model interpretation.
+This project covers an end-to-end machine learning workflow, including exploratory data analysis, preprocessing, model development, evaluation, hyperparameter tuning, error analysis, probability calibration, and model interpretation.
 
 ## Project Overview
 
@@ -40,7 +40,7 @@ The target variable is `Churn`:
    - Converted numerical features to appropriate data types.
    - Removed irrelevant identifiers.
    - Applied One-Hot Encoding to categorical features.
-   - Used feature scaling where appropriate.
+   - Used numerical features without scaling in the final model pipeline.
 
 3. **Model Development**
    - Logistic Regression
@@ -70,24 +70,54 @@ The target variable is `Churn`:
 
 ## Final Model
 
-The selected model is **Gradient Boosting Classifier** with a decision threshold of `0.4`.
+The selected model is a **Gradient Boosting Classifier** with a decision threshold of `0.4`.
+
+### Model Configuration
+
+| Parameter | Value |
+|---|---:|
+| n_estimators | 200 |
+| learning_rate | 0.05 |
+| max_depth | 2 |
+| random_state | 42 |
+| Decision threshold | 0.4 |
 
 ### Validation Performance
 
 | Metric | Score |
 |---|---:|
-| Precision | 0.637 |
-| Recall | 0.662 |
-| F1-score | 0.649 |
-| ROC-AUC | 0.851 |
-| PR-AUC | 0.671 |
+| Accuracy | 0.8101 |
+| Precision | 0.6367 |
+| Recall | 0.6622 |
+| F1-score | 0.6492 |
+| ROC-AUC | 0.8510 |
+| PR-AUC | 0.6707 |
 | Brier Score | 0.1328 |
 
-The model achieved an F1-score of approximately 0.649 on the validation set.
+The decision threshold was selected based on validation F1-score, balancing precision and recall.
 
-The decision threshold was selected based on validation performance, balancing precision and recall.
+### Test Performance
 
-**Note:** These metrics represent validation performance, not an independent final test evaluation.
+| Metric | Score |
+|---|---:|
+| Accuracy | 0.7857 |
+| Precision | 0.5870 |
+| Recall | 0.6497 |
+| F1-score | 0.6168 |
+| ROC-AUC | 0.8438 |
+| PR-AUC | 0.6623 |
+| Brier Score | 0.1361 |
+
+Test confusion matrix:
+
+| | Predicted No | Predicted Yes |
+|---|---:|---:|
+| Actual No | 864 | 171 |
+| Actual Yes | 131 | 243 |
+
+The model correctly identified 243 churn customers and missed 131 actual churn cases.
+
+**Evaluation note:** The test split was used in earlier exploratory model comparisons. Therefore, these results should not be considered a completely untouched, independent estimate of generalization performance. The decision threshold was selected using validation data and was not adjusted based on the latest test results.
 
 ## Model Interpretation
 
@@ -135,18 +165,29 @@ customer-churn-prediction/
 │
 ├── docs/
 │   ├── decisions/
-│   └── model_evaluation.md
+│   ├── data_dictionary.md
+│   ├── model_evaluation.md
+│   └── problem_definition.md
 │
 ├── models/
+│
 ├── notebooks/
+│   ├── 01_data_exploration.ipynb
+│   └── 02_data_preprocessing.ipynb
+│
 ├── reports/
 │   └── figures/
 │
 ├── src/
 │   └── churn_prediction/
+│       ├── data.py
+│       ├── preprocessing.py
+│       ├── train.py
+│       ├── evaluate.py
+│       ├── final_evaluation.py
+│       └── predict.py
 │
 ├── tests/
-│
 ├── .gitignore
 ├── PROJECT_GUIDE.md
 ├── README.md
@@ -162,19 +203,22 @@ customer-churn-prediction/
 - Seaborn
 - Scikit-learn
 - SHAP
+- Joblib
+- Pytest
+- pytest-cov
 - Jupyter Notebook
 - Git and GitHub
 
 ## How to Run
 
-1. Clone the repository:
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/FarimahPak/customer-churn-prediction.git
 cd customer-churn-prediction
 ```
 
-2. Create and activate a virtual environment:
+### 2. Create and Activate a Virtual Environment
 
 ```bash
 python -m venv .venv
@@ -186,35 +230,75 @@ Windows PowerShell:
 .venv\Scripts\Activate.ps1
 ```
 
-3. Install dependencies:
+### 3. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Place the dataset in:
+### 4. Prepare the Dataset
+
+Place the IBM Telco Customer Churn CSV file in:
 
 ```text
 data/raw/Telco-Customer-Churn.csv
 ```
 
-5. Open the notebooks directory and run the notebooks in order.
+### 5. Train the Model
+
+```bash
+python -m src.churn_prediction.train
+```
+
+This command trains the Gradient Boosting model and saves the trained model to:
+
+```text
+models/final_model.joblib
+```
+
+It also reports validation performance.
+
+### 6. Run Final Test Evaluation
+
+After training, run:
+
+```bash
+python -m src.churn_prediction.final_evaluation
+```
+
+This command loads the saved model and evaluates it on the recreated test split.
+
+### 7. Run the Tests
+
+```bash
+python -m pytest -v
+```
+
+To run tests with coverage:
+
+```bash
+python -m pytest --cov=src/churn_prediction --cov-report=term-missing
+```
+
+The current test suite contains 24 tests and achieves approximately 98% code coverage.
 
 ## Limitations
 
 - The analysis uses a single public dataset.
-- Model performance may vary on other customer populations.
+- Model performance may vary across other customer populations.
+- The test split was consulted during earlier exploratory model comparisons.
 - SHAP interpretation was performed on a sample of the validation set.
-- Model predictions indicate patterns in the available data and do not establish causal relationships.
+- Model predictions identify patterns in the available data and do not establish causal relationships.
+- False positive and false negative predictions remain important limitations.
 
 ## Future Improvements
 
-- Perform a clean, independent final test evaluation.
+- Evaluate the model on a new, independent external dataset.
 - Improve recall for underrepresented customer groups.
 - Explore additional feature engineering techniques.
 - Experiment with other gradient boosting algorithms.
-- Develop a reusable prediction pipeline.
-- Add automated tests and model deployment capabilities.
+- Develop a prediction API and deployment workflow.
+- Add model monitoring and data drift detection.
 
 ## Author
 
