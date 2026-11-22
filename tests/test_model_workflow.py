@@ -11,19 +11,6 @@ from churn_prediction.train import (
 )
 from churn_prediction.evaluate import evaluate_model
 
-@pytest.fixture
-def synthetic_data_splits():
-    """Prepare synthetic data splits for independent unit tests."""
-
-    import pandas as pd
-
-    X = pd.DataFrame({
-        "feature": range(100)
-    })
-
-    y = pd.Series([0, 1] * 50)
-
-    return split_data(X, y)
 
 @pytest.fixture
 def synthetic_data_splits():
@@ -86,7 +73,6 @@ def test_data_splits_have_no_overlap(synthetic_data_splits):
 
     assert set(X_fit.index).isdisjoint(X_val.index)
     assert set(X_fit.index).isdisjoint(X_test.index)
-    assert set(X_val.index).isdisjoint(X_test.index)
     assert set(X_val.index).isdisjoint(X_test.index)
 
 

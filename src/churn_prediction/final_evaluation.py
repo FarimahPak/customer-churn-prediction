@@ -8,7 +8,6 @@ from .evaluate import evaluate_model, print_evaluation_results
 def main():
     # Load and prepare the original dataset
     df = load_data()
-    df = load_data()
     X, y = split_features_target(df)
 
     # Recreate the exact same data split
