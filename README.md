@@ -12,24 +12,21 @@ The objective of this project is to build and evaluate machine learning models t
 
 ## 2. Dataset
 
-The project uses the IBM Telco Customer Churn dataset.
+This project uses the IBM Telco Customer Churn dataset.
 
-The dataset contains customer information related to:
+**Source:** [IBM Telco Customer Churn – Official GitHub Repository](https://github.com/IBM/telco-customer-churn-on-icp4d/blob/master/data/Telco-Customer-Churn.csv)
 
-- Customer demographics
-- Subscription services
-- Account information
-- Contract types
-- Payment methods
-- Customer tenure
-- Churn status
+**Direct download:** [Telco-Customer-Churn.csv](https://raw.githubusercontent.com/IBM/telco-customer-churn-on-icp4d/master/data/Telco-Customer-Churn.csv)
+
+The dataset contains 7,043 customer records and 21 columns, including customer demographics, subscription services, account information, and churn status.
 
 The target variable is `Churn`:
-
 - `Yes`: Customer churned
 - `No`: Customer did not churn
 
-To run the project, place the dataset CSV file in the `data/raw/` directory as described in the How to Run section.
+The raw dataset is not included in this repository. Download the CSV file and place it in `data/raw/` with the filename:
+
+`Telco-Customer-Churn.csv`
 
 ## 3. Project Workflow
 
@@ -158,51 +155,30 @@ SHAP values explain model behavior and should not be interpreted as causal relat
 ## 7. Project Structure
 
 ```text
-customer-churn-prediction/
-│
-├── data/
-│   ├── raw/
-│   └── processed/
-│
-├── docs/
-│   ├── decisions/
-│   ├── data_dictionary.md
-│   ├── model_evaluation.md
-│   └── problem_definition.md
-│
-├── models/
+├── .github/
+│   └── workflows/
+│       └── tests.yml
 │
 ├── notebooks/
 │   ├── 01_data_exploration.ipynb
-│   └── 02_data_preprocessing.ipynb
-│
-├── reports/
-│   └── figures/
+│   └── 02_data_preprocessing_archive.ipynb
 │
 ├── src/
 │   └── churn_prediction/
 │       ├── __init__.py
 │       ├── config.py
-│       ├── data.py
-│       ├── preprocessing.py
-│       ├── train.py
-│       ├── evaluate.py
-│       ├── predict.py
-│       └── final_evaluation.py
+│       └── ...
 │
 ├── tests/
-│   ├── test_data.py
-│   ├── test_preprocessing.py
-│   ├── test_model_workflow.py
-│   ├── test_predict.py
-│   ├── test_evaluate.py
-│   └── test_final_evaluation.py
+│   └── ...
 │
+├── requirements.txt
+├── requirements-dev.txt
+├── requirements-notebook.txt
+├── pytest.ini
 ├── .gitignore
 ├── PROJECT_GUIDE.md
-├── README.md
-├── pytest.ini
-└── requirements.txt
+└── README.md
 ```
 
 ## 8. Technologies Used
@@ -220,7 +196,8 @@ customer-churn-prediction/
 - Jupyter Notebook
 - Git and GitHub
 
-## 9. How to Run
+
+## 9. Installation and Usage
 
 ### 1. Clone the Repository
 
@@ -231,25 +208,45 @@ cd customer-churn-prediction
 
 ### 2. Create and Activate a Virtual Environment
 
-```bash
-python -m venv .venv
-```
-
-Windows PowerShell:
+**Windows (PowerShell):**
 
 ```powershell
+python -m venv .venv
 .venv\Scripts\Activate.ps1
 ```
 
+**Linux / macOS:**
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+
 ### 3. Install Dependencies
+
+Choose the dependency group based on your needs.
+
+**Core dependencies:**
 
 ```bash
 pip install -r requirements.txt
 ```
 
+**Development and testing:**
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+**Notebook dependencies:**
+
+```bash
+pip install -r requirements-notebook.txt
+```
+
 ### 4. Prepare the Dataset
 
-Place the IBM Telco Customer Churn CSV file in:
+Download the dataset using the links in the Dataset section and place it at:
 
 ```text
 data/raw/Telco-Customer-Churn.csv
@@ -261,17 +258,11 @@ data/raw/Telco-Customer-Churn.csv
 python -m src.churn_prediction.train
 ```
 
-This command trains the Gradient Boosting model and saves the trained model to:
-
-```text
-models/final_model.joblib
-```
-
-It also reports validation performance.
+The command trains the Gradient Boosting model, saves it to `models/final_model.joblib`, and reports validation performance.
 
 ### 6. Run Final Test Evaluation
 
-After training, run:
+After training:
 
 ```bash
 python -m src.churn_prediction.final_evaluation
@@ -279,23 +270,37 @@ python -m src.churn_prediction.final_evaluation
 
 This command loads the saved model and evaluates it on the recreated test split.
 
-### 7. Run the Tests
+## 10. Testing and Continuous Integration
+
+Install development dependencies:
 
 ```bash
-python -m pytest -v
+pip install -r requirements-dev.txt
 ```
 
-To run tests with coverage:
+Run all tests:
 
 ```bash
-python -m pytest --cov=src/churn_prediction --cov-report=term-missing
+pytest
 ```
 
-## 10. Test Suite
+Run only non-integration tests:
 
-The project includes 38 automated tests covering data loading, preprocessing, model evaluation, prediction, and the end-to-end model workflow.
+```bash
+pytest -m "not integration"
+```
 
-The test suite achieves **97% code coverage**.
+Run tests with coverage:
+
+```bash
+pytest --cov=src/churn_prediction --cov-report=term-missing
+```
+
+The full test suite contains 38 tests and has achieved 97% code coverage.
+
+Integration tests require the raw dataset at `data/raw/Telco-Customer-Churn.csv`. They are excluded from GitHub Actions because the dataset is not stored in the repository.
+
+GitHub Actions automatically runs non-integration tests on pushes and pull requests targeting the `main` branch.
 
 ## 11. Limitations
 
