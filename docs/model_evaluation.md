@@ -1,6 +1,6 @@
 # Model Evaluation
 
-## Baseline Model: Logistic Regression
+## Logistic Regression Baseline (Historical Experiment)
 
 ### Experimental Setup
 
@@ -37,7 +37,7 @@
 - Recall for the positive class (Churn = Yes) is 0.56, meaning that approximately 44% of actual churn cases are missed.
 - The model provides a reasonable starting point, but identifying more customers at risk of churn remains an improvement opportunity.
 
-## Threshold Analysis
+## Logistic Regression Threshold Analysis (Historical Experiment)
 
 ### Objective
 
@@ -62,11 +62,11 @@ Evaluate different classification thresholds using a validation set to understan
 
 ### Selected Threshold
 
-A threshold of 0.4 was selected because it achieved the highest F1-score among the evaluated thresholds.
+The decision threshold was selected based on validation F1-score. The test set was not used for threshold selection.
 
-It provides a balance between identifying churn customers and limiting false positive predictions.
+A threshold of 0.4 achieved the highest F1-score among the tested thresholds and was selected for the subsequent Logistic Regression evaluation.
 
-## Final Model Evaluation
+## Logistic Regression Evaluation at Threshold 0.4 (Historical Experiment)
 
 ### Experimental Setup
 
@@ -94,35 +94,36 @@ It provides a balance between identifying churn customers and limiting false pos
 | Actual No | 845 | 190 |
 | Actual Yes | 124 | 250 |
 
-### Final Observations
+### Observations
 
-- Recall increased from approximately 0.56 to 0.67 compared with the baseline predictions.
-- The final model identified 41 additional churn customers.
-- False Positives increased from 109 to 190.
-- Accuracy decreased because the model classified more customers as potential churners.
-- ROC-AUC and PR-AUC remained approximately unchanged.
-- The selected threshold prioritizes identifying more potential churn customers at the cost of additional false positive predictions.
+- Recall increased from 0.56 at the baseline threshold of 0.5 to 0.67 at the selected threshold of 0.4.
+- The model identified 41 additional churn customers compared with the baseline threshold.
+- False positives increased from 109 to 190, while Accuracy decreased.
+- ROC-AUC and PR-AUC remained unchanged because threshold adjustment does not affect the predicted probabilities.
+- The threshold of 0.4 favors identifying more potential churn customers at the cost of lower Precision.
 
-## Conclusion
+## Logistic Regression Experiment Conclusion
 
-The Logistic Regression model provides a reasonable baseline for customer churn prediction.
+The Logistic Regression model provided a useful baseline for customer churn prediction. Applying the threshold of 0.4, selected using validation data, increased Recall on the existing test split compared with the baseline threshold of 0.5, while Precision and Accuracy decreased.
 
-Threshold selection improved Recall on the held-out test set, although Precision and Accuracy decreased.
+Because the test split was consulted during earlier exploratory experiments, these results should be treated as descriptive comparisons rather than an independent estimate of generalization performance.
 
-A threshold of 0.4 was selected based on validation performance. Its practical suitability depends on the relative business costs of missed churn customers and unnecessary retention interventions.
+The Logistic Regression model was later compared with other candidates, and Gradient Boosting achieved the highest validation F1-score among the tested models.
 
-## Next Steps
+## Planned Follow-up Experiments (Historical)
+
+The following experiments were identified as potential next steps during the initial Logistic Regression analysis. They were subsequently explored in the experiments documented below.
 
 - Perform error analysis on False Positives and False Negatives.
 - Evaluate Logistic Regression with class weighting.
 - Compare additional classification algorithms.
 - Investigate feature importance and model interpretability.
 
-## Error Analysis
+## Logistic Regression Error Analysis (Historical Experiment)
 
 ### False Negative Analysis by Contract Type
 
-The final model's False Negatives were analyzed to identify patterns among customers who actually churned but were predicted as non-churning.
+The Logistic Regression model's False Negatives were analyzed to identify patterns among customers who actually churned but were predicted as non-churning.
 
 | Contract Type | Actual Churners | False Negatives | Detected Churners | Recall |
 |---|---:|---:|---:|---:|
@@ -276,7 +277,7 @@ Permutation Importance measures the impact of disrupting a feature on model perf
 
 These findings describe the current Logistic Regression model and should not be interpreted as universal measures of customer churn behavior.
 
-## Class Weighting Experiment
+## Logistic Regression Class Weighting Experiment (Historical)
 
 ### Objective
 
@@ -464,13 +465,13 @@ The best tested threshold for each model was selected based on validation F1-sco
 |---|---:|---:|---:|---:|
 | Logistic Regression | 0.4 | 0.617 | 0.669 | 0.642 |
 | Tuned Random Forest | 0.6 | 0.610 | 0.686 | 0.646 |
-| Initial Gradient Boosting | 0.4 | 0.637 | 0.662 | **0.649** |
+| Gradient Boosting | 0.4 | 0.637 | 0.662 | **0.649** |
 
 Gradient Boosting achieved the highest validation F1-score among the tested candidates, while Random Forest achieved the highest recall.
 
 The differences are small. The final model selection should also consider interpretability, probability quality, and the business cost of false positives and false negatives.
 
-**Evaluation note:** Model selection and threshold comparisons are based on validation data. The test set was examined during earlier exploratory experiments, so it is not treated as an untouched final evaluation set.
+**Evaluation note:** Model selection and threshold comparisons are based on validation data. The test split was consulted during earlier exploratory experiments and should therefore be interpreted as a descriptive evaluation rather than an independent estimate of generalization performance.
 
 ## 11. Gradient Boosting Error Analysis
 
@@ -824,7 +825,7 @@ The decision threshold of 0.4 was selected using validation data and was not adj
 
 ### 14.6 Final Conclusion
 
-The initial Gradient Boosting model was retained because it achieved the highest validation F1-score among the compared candidates.
+The selected Gradient Boosting model was retained because it achieved the highest validation F1-score among the compared candidates.
 
 At the selected threshold of 0.4, the model achieved a test F1-score of 0.6168 and a ROC-AUC of 0.8438.
 

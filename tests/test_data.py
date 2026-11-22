@@ -2,7 +2,7 @@
 import pandas as pd
 import pytest
 
-from src.churn_prediction.data import load_data, split_features_target
+from churn_prediction.data import load_data, split_features_target
 
 
 def test_load_data_success(tmp_path):

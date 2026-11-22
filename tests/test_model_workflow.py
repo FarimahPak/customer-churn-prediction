@@ -2,14 +2,14 @@
 import numpy as np
 import pytest
 
-from src.churn_prediction.data import load_data, split_features_target
-from src.churn_prediction.preprocessing import clean_features
-from src.churn_prediction.train import (
+from churn_prediction.data import load_data, split_features_target
+from churn_prediction.preprocessing import clean_features
+from churn_prediction.train import (
     split_data,
     build_model,
     train_model,
 )
-from src.churn_prediction.evaluate import evaluate_model
+from churn_prediction.evaluate import evaluate_model
 
 @pytest.fixture
 def synthetic_data_splits():
@@ -31,7 +31,7 @@ def synthetic_data_splits():
 
     import pandas as pd
 
-    from src.churn_prediction.preprocessing import (
+    from churn_prediction.preprocessing import (
         NUMERICAL_FEATURES,
         CATEGORICAL_FEATURES,
     )
@@ -96,8 +96,9 @@ def test_build_model_configuration():
     model = build_model()
 
     assert list(model.named_steps.keys()) == [
-        "preprocessor",
-        "classifier",
+    "cleaner",
+    "preprocessor",
+    "classifier",
     ]
 
     classifier = model.named_steps["classifier"]
@@ -152,8 +153,8 @@ def test_model_evaluation_matches_previous_results(
 def test_main_runs_complete_training_workflow(monkeypatch, tmp_path, capsys):
     import pandas as pd
 
-    from src.churn_prediction import train as train_module
-    from src.churn_prediction import evaluate as evaluate_module
+    from churn_prediction import train as train_module
+    from churn_prediction import evaluate as evaluate_module
 
     fake_df = pd.DataFrame({
         "customerID": ["A", "B", "C", "D"],

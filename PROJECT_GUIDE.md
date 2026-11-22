@@ -49,33 +49,42 @@ The project aims to demonstrate practical machine learning skills, software engi
 
 ## 5. Project Architecture
 
-- `configs/`: Project configuration.
 - `data/raw/`: Original datasets.
 - `data/processed/`: Processed datasets.
 - `docs/`: Project documentation and technical decisions.
-- `notebooks/`: Exploratory analysis and experiments.
-- `reports/`: Figures and evaluation reports.
-- `src/`: Reusable application and ML code.
-- `tests/`: Automated tests.
+- `notebooks/`: Exploratory analysis and preprocessing experiments.
+- `src/churn_prediction/`: Reusable machine learning code.
+  - `config.py`: Centralized model and project configuration.
+  - `data.py`: Dataset loading and validation.
+  - `preprocessing.py`: Data cleaning, preprocessing, and input validation.
+  - `train.py`: Model training and saving.
+  - `evaluate.py`: Model evaluation.
+  - `predict.py`: Customer churn predictions.
+  - `final_evaluation.py`: Final model evaluation on the existing test split.
+- `tests/`: Automated unit and integration tests.
 - `models/`: Saved model artifacts.
-- `.github/workflows/`: CI workflows.
+- `README.md`: Project overview and usage instructions.
+- `PROJECT_GUIDE.md`: Development principles and project workflow.
 
 ## 6. Machine Learning Workflow
 
 1. Problem Definition
-2. Dataset Collection
+2. Dataset Collection and Understanding
 3. Exploratory Data Analysis
 4. Data Quality Assessment
-5. Data Preprocessing
-6. Baseline Model
-7. Model Development
-8. Model Evaluation
-9. Error Analysis
-10. Model Improvement
-11. Model Packaging
-12. Testing
-13. Documentation and GitHub Release
-14. Deployment (planned extension)
+5. Data Cleaning and Preprocessing
+6. Train, Validation, and Test Split
+7. Baseline Model Development
+8. Model Training and Comparison
+9. Hyperparameter Tuning
+10. Threshold Selection
+11. Model Evaluation
+12. Error Analysis
+13. Probability Calibration and Model Interpretation
+14. Input Validation and Prediction Pipeline
+15. Automated Testing
+16. Documentation and Reproducibility
+17. Model Packaging and Deployment (planned extension)
 
 ## 7. Git Workflow
 
@@ -118,12 +127,14 @@ The learner should understand and be able to explain all important implementatio
 
 A development task is complete when:
 
-- The implementation works as expected.
-- Relevant tests pass.
-- The code follows project conventions.
-- Results are reproducible where applicable.
-- Documentation is updated.
-- Changes are committed to Git.
+- The implementation meets its functional requirements.
+- Relevant automated tests pass.
+- Input validation and error handling are implemented where necessary.
+- Model behavior and evaluation results are verified.
+- Experiments are reproducible where applicable.
+- Documentation reflects the current implementation.
+- No unnecessary generated files or sensitive information are included.
+- Changes are reviewed and committed to Git.
 
 ## 11. Scope Control
 

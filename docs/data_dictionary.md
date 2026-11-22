@@ -30,9 +30,19 @@ The dataset contains 7,043 customer records and 21 original columns.
 | TotalCharges | Total amount charged to the customer | Numerical |
 | Churn | Indicates whether the customer left the company (Yes/No) | Target |
 
+## Numerical Feature Constraints
+
+| Feature | Valid Range |
+|---|---|
+| tenure | 0–72 months |
+| MonthlyCharges | 0–120 |
+| TotalCharges | 0 or greater |
+
 ## Additional Notes
 
 - `customerID` is an identifier and will be excluded from model features.
-- `TotalCharges` contains 11 empty string values. All corresponding records have `tenure = 0`; these values will be handled during preprocessing.
+- `TotalCharges` contains 11 empty string values, all corresponding to records with `tenure = 0`. Empty values are converted to missing values during input validation and then filled with 0 during preprocessing.
 - `tenure_group` is an additional feature created temporarily for EDA and is not part of the original dataset.
 - `Churn` is the target variable for binary classification.
+- The original dataset contains 20 input columns and one target column.
+- After excluding `customerID`, 19 features are used as model inputs.

@@ -4,13 +4,13 @@ A machine learning project to predict customer churn using the IBM Telco Custome
 
 This project covers an end-to-end machine learning workflow, including exploratory data analysis, preprocessing, model development, evaluation, hyperparameter tuning, error analysis, probability calibration, and model interpretation.
 
-## Project Overview
+## 1. Project Overview
 
 Customer churn is a major challenge for subscription-based businesses. Identifying customers who are likely to leave can help businesses better understand customer behavior and develop retention strategies.
 
 The objective of this project is to build and evaluate machine learning models that predict whether a customer will leave the service.
 
-## Dataset
+## 2. Dataset
 
 The project uses the IBM Telco Customer Churn dataset.
 
@@ -29,7 +29,9 @@ The target variable is `Churn`:
 - `Yes`: Customer churned
 - `No`: Customer did not churn
 
-## Project Workflow
+To run the project, place the dataset CSV file in the `data/raw/` directory as described in the How to Run section.
+
+## 3. Project Workflow
 
 1. **Exploratory Data Analysis**
    - Examined feature distributions and target imbalance.
@@ -68,7 +70,7 @@ The target variable is `Churn`:
    - Customer group analysis.
    - False positive and false negative investigation.
 
-## Final Model
+## 4. Final Model
 
 The selected model is a **Gradient Boosting Classifier** with a decision threshold of `0.4`.
 
@@ -119,7 +121,7 @@ The model correctly identified 243 churn customers and missed 131 actual churn c
 
 **Evaluation note:** The test split was used in earlier exploratory model comparisons. Therefore, these results should not be considered a completely untouched, independent estimate of generalization performance. The decision threshold was selected using validation data and was not adjusted based on the latest test results.
 
-## Model Interpretation
+## 5. Model Interpretation
 
 SHAP analysis was performed on 200 validation samples to better understand the model's predictions.
 
@@ -139,7 +141,7 @@ The results highlight the importance of contract type, customer tenure, and serv
 
 SHAP values explain model behavior and should not be interpreted as causal relationships.
 
-## Visualizations
+## 6. Visualizations
 
 ### SHAP Feature Importance
 
@@ -153,12 +155,11 @@ SHAP values explain model behavior and should not be interpreted as causal relat
 
 ![Confusion Matrix](reports/figures/confusion_matrix.png)
 
-## Project Structure
+## 7. Project Structure
 
 ```text
 customer-churn-prediction/
 │
-├── configs/
 ├── data/
 │   ├── raw/
 │   └── processed/
@@ -180,21 +181,31 @@ customer-churn-prediction/
 │
 ├── src/
 │   └── churn_prediction/
+│       ├── __init__.py
+│       ├── config.py
 │       ├── data.py
 │       ├── preprocessing.py
 │       ├── train.py
 │       ├── evaluate.py
-│       ├── final_evaluation.py
-│       └── predict.py
+│       ├── predict.py
+│       └── final_evaluation.py
 │
 ├── tests/
+│   ├── test_data.py
+│   ├── test_preprocessing.py
+│   ├── test_model_workflow.py
+│   ├── test_predict.py
+│   ├── test_evaluate.py
+│   └── test_final_evaluation.py
+│
 ├── .gitignore
 ├── PROJECT_GUIDE.md
 ├── README.md
+├── pytest.ini
 └── requirements.txt
 ```
 
-## Technologies Used
+## 8. Technologies Used
 
 - Python
 - Pandas
@@ -209,7 +220,7 @@ customer-churn-prediction/
 - Jupyter Notebook
 - Git and GitHub
 
-## How to Run
+## 9. How to Run
 
 ### 1. Clone the Repository
 
@@ -280,9 +291,13 @@ To run tests with coverage:
 python -m pytest --cov=src/churn_prediction --cov-report=term-missing
 ```
 
-The current test suite contains 24 tests and achieves approximately 98% code coverage.
+## 10. Test Suite
 
-## Limitations
+The project includes 38 automated tests covering data loading, preprocessing, model evaluation, prediction, and the end-to-end model workflow.
+
+The test suite achieves **97% code coverage**.
+
+## 11. Limitations
 
 - The analysis uses a single public dataset.
 - Model performance may vary across other customer populations.
@@ -291,7 +306,7 @@ The current test suite contains 24 tests and achieves approximately 98% code cov
 - Model predictions identify patterns in the available data and do not establish causal relationships.
 - False positive and false negative predictions remain important limitations.
 
-## Future Improvements
+## 12. Future Improvements
 
 - Evaluate the model on a new, independent external dataset.
 - Improve recall for underrepresented customer groups.
@@ -300,7 +315,7 @@ The current test suite contains 24 tests and achieves approximately 98% code cov
 - Develop a prediction API and deployment workflow.
 - Add model monitoring and data drift detection.
 
-## Author
+## 13. Author
 
 **Farimah Pak**
 

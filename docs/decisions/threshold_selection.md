@@ -1,4 +1,4 @@
-# Threshold Selection
+# Logistic Regression Threshold Selection (Historical Experiment)
 
 ## Objective
 
@@ -16,7 +16,7 @@ Evaluate different classification thresholds using the validation set to underst
 
 ## Decision
 
-A threshold of 0.4 was selected based on validation results.
+A threshold of 0.4 was selected based on validation results.The test set was not used to select the threshold.
 
 It achieved the highest F1-score among the evaluated thresholds while maintaining a reasonable balance between Precision and Recall.
 
@@ -25,7 +25,7 @@ It achieved the highest F1-score among the evaluated thresholds while maintainin
 - Lower thresholds improve Recall but increase False Positives.
 - Higher thresholds improve Precision but increase False Negatives.
 - The selected threshold is based on validation data, not test data.
-- The final model will be evaluated on the held-out test set using this threshold.
+- The existing test split was used for descriptive evaluation after threshold selection. Since it was consulted during earlier exploratory experiments, it is not considered an untouched independent test set.
 
 ## Selected Threshold
 

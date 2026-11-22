@@ -1,20 +1,20 @@
 
-from pathlib import Path
-
 import joblib
+
+from sklearn.preprocessing import FunctionTransformer
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 
+from .config import (
+    MODEL_PATH,
+    RANDOM_STATE,
+    TEST_SIZE,
+    VALIDATION_SIZE,
+    MODEL_PARAMS,
+)
 from .data import load_data, split_features_target
 from .preprocessing import clean_features, build_preprocessor
-
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-MODEL_PATH = PROJECT_ROOT / "models" / "final_model.joblib"
-
-RANDOM_STATE = 42
-TEST_SIZE = 0.2
-VALIDATION_SIZE = 0.2
 
 
 def split_data(X, y):
@@ -44,15 +44,14 @@ def build_model() -> Pipeline:
 
     model = Pipeline(
         steps=[
+            (
+                "cleaner",
+                FunctionTransformer(clean_features, validate=False),
+            ),
             ("preprocessor", build_preprocessor()),
             (
                 "classifier",
-                GradientBoostingClassifier(
-                    n_estimators=200,
-                    learning_rate=0.05,
-                    max_depth=2,
-                    random_state=RANDOM_STATE,
-                ),
+                GradientBoostingClassifier(**MODEL_PARAMS)
             ),
         ]
     )
@@ -74,12 +73,9 @@ def main():
     df = load_data()
     X, y = split_features_target(df)
 
-    X = clean_features(X)
-
     X_fit, X_val, X_test, y_fit, y_val, y_test = split_data(X, y)
 
     model = train_model(X_fit, y_fit)
-    
 
     MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
 

@@ -27,11 +27,11 @@ Given historical customer information, the model will predict whether a customer
 - **Positive class:** `Yes`
 - **Negative class:** `No`
 
-## 5. Initial Model
+## 5. Modeling Approach
 
-Logistic Regression will be used as the initial baseline model.
+Logistic Regression was used as the initial baseline model to establish a reference performance.
 
-More advanced models may be evaluated after establishing a reliable baseline.
+Additional models, including Random Forest and Gradient Boosting, were evaluated during model development. Gradient Boosting was selected as the final model based on its validation performance.
 
 ## 6. Evaluation Metrics
 
@@ -42,6 +42,7 @@ The model will be evaluated using:
 - F1-score
 - ROC-AUC
 - PR-AUC
+- Brier Score
 
 Accuracy will also be reported, but it will not be the only evaluation metric.
 
@@ -51,4 +52,8 @@ The goal is to build a reproducible, well-documented, and tested machine learnin
 
 ## 8. Project Limitations
 
-The model's predictions will be based on the available historical dataset. Predictions should not be interpreted as proof that a customer will churn.
+The model's predictions are based on the available historical dataset and should not be interpreted as proof that a customer will churn.
+
+The existing test split was consulted during earlier exploratory experiments. Therefore, its evaluation results should be considered descriptive rather than a fully independent estimate of generalization performance.
+
+Further evaluation on an independent external dataset would provide stronger evidence of the model's ability to generalize to unseen customer data.

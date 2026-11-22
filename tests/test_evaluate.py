@@ -1,7 +1,7 @@
 
 import numpy as np
 
-from src.churn_prediction.evaluate import (
+from churn_prediction.evaluate import (
     evaluate_model,
     print_evaluation_results,
 )

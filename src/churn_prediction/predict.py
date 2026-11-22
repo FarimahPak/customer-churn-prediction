@@ -1,15 +1,8 @@
-
-from pathlib import Path
-
-from .preprocessing import clean_features
 import joblib
 import pandas as pd
 
-
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-MODEL_PATH = PROJECT_ROOT / "models" / "final_model.joblib"
-
-DECISION_THRESHOLD = 0.4
+from .config import MODEL_PATH, DECISION_THRESHOLD
+from .preprocessing import validate_customer_data
 
 
 def load_model():
@@ -26,8 +19,8 @@ def load_model():
 
 def predict_churn(customer_data: pd.DataFrame) -> pd.DataFrame:
     """Predict churn probability and class for new customers."""
-    
-    customer_data = clean_features(customer_data)
+
+    customer_data = validate_customer_data(customer_data)
     model = load_model()
 
     probabilities = model.predict_proba(customer_data)[:, 1]

@@ -9,9 +9,7 @@ from sklearn.metrics import (
     recall_score,
     roc_auc_score,
 )
-
-
-DECISION_THRESHOLD = 0.4
+from .config import DECISION_THRESHOLD
 
 
 def evaluate_model(model, X_val, y_val, threshold=DECISION_THRESHOLD):

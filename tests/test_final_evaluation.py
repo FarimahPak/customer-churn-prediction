@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 
-from src.churn_prediction import final_evaluation
+from churn_prediction import final_evaluation
 
 
 def test_final_evaluation_main(monkeypatch, capsys):
@@ -35,23 +35,25 @@ def test_final_evaluation_main(monkeypatch, capsys):
         lambda df: (fake_X, fake_y),
     )
 
-    monkeypatch.setattr(
-        final_evaluation,
-        "clean_features",
-        lambda X: X,
-    )
+    captured_split = {}
 
-    monkeypatch.setattr(
-        final_evaluation,
-        "split_data",
-        lambda X, y: (
+    def fake_split_data(X, y):
+        captured_split["X"] = X.copy()
+        captured_split["y"] = y.copy()
+
+        return (
             None,
             None,
             fake_X_test,
             None,
             None,
             fake_y_test,
-        ),
+        )
+
+    monkeypatch.setattr(
+        final_evaluation,
+        "split_data",
+        fake_split_data,
     )
 
     monkeypatch.setattr(
@@ -87,6 +89,16 @@ def test_final_evaluation_main(monkeypatch, capsys):
     )
 
     final_evaluation.main()
+
+    pd.testing.assert_frame_equal(
+        captured_split["X"],
+        fake_X,
+    )
+
+    pd.testing.assert_series_equal(
+        captured_split["y"],
+        fake_y,
+    )
 
     assert isinstance(captured_evaluation["model"], FakeModel)
     pd.testing.assert_frame_equal(
